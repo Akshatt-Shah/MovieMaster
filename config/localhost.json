@@ -1,0 +1,5 @@
+{
+    "PORT":3000,
+    "MONGOURL":"mongodb+srv://akshat:akki5101@cluster0.dxszy3f.mongodb.net/MovieMaster?retryWrites=true&w=majority&appName=Cluster0",
+    "SECRETKEY":""
+}
