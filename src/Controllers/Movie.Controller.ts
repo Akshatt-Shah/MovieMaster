@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { IMovie } from "@interfaces";
 import { MovieServices } from "@Services";
 import { NewRequest } from "../Middlewares/Verify.Middelware";
+import mongoose, { mongo } from "mongoose";
 const MovieService = new MovieServices();
 
 export class MovieController {
@@ -17,7 +18,8 @@ export class MovieController {
   async GetMovies(req: NewRequest, res: Response) {
     try {
       const { AdminId, Role } = req;
-      const MovieData = await MovieService.GetMovie();
+      const Query:any = req.query;
+      const MovieData = await MovieService.GetMovie(AdminId,Role,Query );
       res.status(200).json(MovieData);
     } catch (error: any) {
       res.status(400).json({ message: error.message, status: false });

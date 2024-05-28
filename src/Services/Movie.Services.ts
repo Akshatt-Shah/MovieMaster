@@ -1,5 +1,7 @@
 import { IMovie } from "@interfaces";
-import { movies } from "@Models";
+import { movies, users } from "@Models";
+import mongoose from "mongoose";
+import { Pipeline } from "../utills/PipelineMatch.utills";
 
 export class MovieServices {
   async CreateMovie(data: IMovie) {
@@ -14,11 +16,66 @@ export class MovieServices {
       return { message: error.message, status: false };
     }
   }
-  async GetMovie() {
+  async GetMovie(AdminId?: string, Role?: string, Query?: any) {
     try {
-    
+      // let Id = null;
+      // let MatchObject: any = {};
+      // let SearchObject: any = {};
+      // if (Query.Search) {
+      //   SearchObject = {
+      //     $or: [
+      //       { "genereInfo.name": { $regex: Query.Search, $options: "i" } },
+      //       { "castInfo.name": { $regex: Query.Search, $options: "i" } },
+      //       { "DirectorInfo.name": { $regex: Query.Search, $options: "i" } },
+      //       { "castInfo.name": { $regex: Query.Search, $options: "i" } },
+      //       { "producerInfo.name": { $regex: Query.Search, $options: "i" } },
+      //     ],
+      //   };
+      // }
+      // if (Query.StartBudget) {
+      //   SearchObject["Budget"] = { $gte: Number(Query.StartBudget) };
+      // }
+      // if (Query.EndBudget) {
+      //   SearchObject["Budget"] = {
+      //     ...SearchObject["Budget"],
+      //     $lte: Number(Query.EndBudget),
+      //   };
+      // }
+      // if (Query.StartDate) {
+      //   let sDate = new Date(Query.StartDate).toISOString();
+      //   SearchObject["releasedata"] = { $gte: new Date(sDate) };
+      // }
+      // if (Query.EndDate) {
+      //   let sDate = new Date(Query.EndDate).toISOString();
+      //   SearchObject["releasedata"] = {
+      //     ...SearchObject["releasedata"],
+      //     $lte: new Date(sDate),
+      //   };
+      // }
+      // console.log(SearchObject);
+      // if (AdminId) {
+      //   Id = new mongoose.Types.ObjectId(AdminId);
+      // }
+      // if (Role === "Actor") {
+      //   MatchObject["cast"] = Id;
+      // }
+      // if (Role === "Producer") {
+      //   MatchObject["producer"] = Id;
+      // }
+      // if (Role === "Director") {
+      //   MatchObject["director"] = Id;
+      // }
+      // if (Role === "User" || Role === "Admin") {
+      //   MatchObject;
+      // }
+      // console.log(MatchObject);
+      const Data = Pipeline(AdminId, Role, Query);
       // const MovieData = await movies.find();
+      
       const MovieData = await movies.aggregate([
+        {
+          $match: Data.MatchObject,
+        },
         {
           $lookup: {
             from: "generes",
@@ -51,6 +108,7 @@ export class MovieServices {
             as: "DirectorInfo",
           },
         },
+        { $match: Data.SearchObject },
         {
           $addFields: {
             SuccessLevel: {
@@ -102,6 +160,7 @@ export class MovieServices {
             },
           },
         },
+
         {
           $project: {
             title: 1,
