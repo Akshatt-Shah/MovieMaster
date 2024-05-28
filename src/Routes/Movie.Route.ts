@@ -24,5 +24,10 @@ MRoute.put(
   Verify.verifyAdmin,
   MovieControllers.UpdateMovies
 );
+MRoute.get(
+  "/Movie/PDFMovie/:Id",
+  Verify.verifyAdmin,
+  MovieControllers.PdfMovies
+);
 
 export default MRoute;

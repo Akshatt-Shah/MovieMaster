@@ -3,6 +3,7 @@ import { movies, users } from "@Models";
 import mongoose from "mongoose";
 import { Pipeline } from "../utills/PipelineMatch.utills";
 
+
 export class MovieServices {
   async CreateMovie(data: IMovie) {
     try {
@@ -71,7 +72,7 @@ export class MovieServices {
       // console.log(MatchObject);
       const Data = Pipeline(AdminId, Role, Query);
       // const MovieData = await movies.find();
-      
+
       const MovieData = await movies.aggregate([
         {
           $match: Data.MatchObject,
@@ -225,6 +226,16 @@ export class MovieServices {
         message: "Movie Updated Successfully",
         Data: MovieData,
         status: true,
+      };
+    } catch (error: any) {
+      return { message: error.message, status: false };
+    }
+  }
+  async PdfMovie(Id: string) {
+    try {
+      const MovieData = await movies.findById(Id);
+      return {
+        Data: MovieData,
       };
     } catch (error: any) {
       return { message: error.message, status: false };
