@@ -55,7 +55,7 @@ export class UserServices {
               expiresIn: "12h",
             }
           );
-          
+
           return { message: "Login Successful", token: Token, status: true };
         } else {
           return {
@@ -92,6 +92,43 @@ export class UserServices {
         data: userdata,
         status: true,
       };
+    } catch (error: any) {
+      return { message: error.message, status: false };
+    }
+  }
+  async ResetPasswordUser(id: string, oldpass: string, newpass: string) {
+    try {
+      const userdata = await users.findOne({ _id: id });
+      console.log(userdata);
+      if (userdata) {
+        const validate = await bcrypt.compare(oldpass, userdata.password);
+        if (validate) {
+          newpass = await bcrypt.hash(newpass, 10);
+          console.log(newpass)
+          const user = await users.findByIdAndUpdate(id, { password: newpass });
+          return {
+            message: "Userpassword reset Successfully!!!",
+            data: userdata,
+            status: true,
+          };
+        } else {
+          return {
+            message: "Userpassword not reset Successfully!!!",
+            status: true,
+          };
+        }
+      }
+      return {
+        message: "User Not Found",
+        status: true,
+      };
+    } catch (error: any) {
+      return { message: error.message, status: false };
+    }
+  }
+  async ForgetPasswordUser() {
+    try {
+      
     } catch (error: any) {
       return { message: error.message, status: false };
     }
