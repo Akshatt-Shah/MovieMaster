@@ -34,7 +34,7 @@ export class UserController {
   }
   async GetAllUser(req: Request, res: Response) {
     try {
-      const { role }:any = req.query;
+      const { role }: any = req.query;
       const Userdata = await UserService.GetAllUser(role);
       res.status(SuccessStatus.created).json(Userdata);
     } catch (error: any) {
@@ -85,6 +85,34 @@ export class UserController {
     try {
       const { userid }: any = req.params;
       const Userdata = await UserService.DeleteUser(userid);
+      res.status(SuccessStatus.created).json(Userdata);
+    } catch (error: any) {
+      res
+        .status(ErrorStatus.internalServerError)
+        .json({ message: error.message });
+    }
+  }
+  async ResetPasswordUser(req: NewRequest, res: Response) {
+    try {
+      const { AdminId }: any = req;
+      let { oldpass, newpass } = req.body;
+      const Userdata = await UserService.ResetPasswordUser(
+        AdminId,
+        oldpass,
+        newpass
+      );
+      res.status(SuccessStatus.created).json(Userdata);
+    } catch (error: any) {
+      res
+        .status(ErrorStatus.internalServerError)
+        .json({ message: error.message });
+    }
+  }
+  async ForgetPasswordUser(req: NewRequest, res: Response) {
+    try {
+      const { AdminId }: any = req;
+      let { oldpass, newpass } = req.body;
+      const Userdata = await UserService.ForgetPasswordUser();
       res.status(SuccessStatus.created).json(Userdata);
     } catch (error: any) {
       res

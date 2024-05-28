@@ -19,4 +19,6 @@ URoute.delete("/user/DeleteUser",Verify.verifyForAll, UserControllers.DeleteUser
 
 URoute.delete("/user/DeleteUser/:userid",Verify.verifyAdmin, UserControllers.DeleteUserByAdmin);
 
+URoute.post("/user/ResetPassword",Verify.verifyForAll, UserControllers.ResetPasswordUser);
+
 export default URoute;
