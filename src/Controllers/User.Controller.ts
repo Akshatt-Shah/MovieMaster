@@ -6,6 +6,7 @@ import Jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { users } from "@Models";
 import { NewRequest } from "../Middlewares/Verify.Middelware";
+import { sendOTP } from "../utills/SendOtp";
 const UserService = new UserServices();
 
 export class UserController {
@@ -110,9 +111,31 @@ export class UserController {
   }
   async ForgetPasswordUser(req: NewRequest, res: Response) {
     try {
-      const { AdminId }: any = req;
-      let { oldpass, newpass } = req.body;
-      const Userdata = await UserService.ForgetPasswordUser();
+      const { useremail }: any = req.body;
+
+      const Userdata = await UserService.ForgetPasswordUser(useremail);
+      res.status(SuccessStatus.created).json(Userdata);
+    } catch (error: any) {
+      res
+        .status(ErrorStatus.internalServerError)
+        .json({ message: error.message });
+    }
+  }
+  async VerifyOtp(req: NewRequest, res: Response) {
+    try {
+      const { useremail, otp }: any = req.body;
+      const Userdata = await UserService.VerifyOtp(useremail, otp);
+      res.status(SuccessStatus.created).json(Userdata);
+    } catch (error: any) {
+      res
+        .status(ErrorStatus.internalServerError)
+        .json({ message: error.message });
+    }
+  }
+  async ForgetPassword(req: NewRequest, res: Response) {
+    try {
+      const { useremail, newpass }: any = req.body;
+      const Userdata = await UserService.ForgetPassword(useremail, newpass);
       res.status(SuccessStatus.created).json(Userdata);
     } catch (error: any) {
       res

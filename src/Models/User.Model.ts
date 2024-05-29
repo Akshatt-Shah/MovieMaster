@@ -23,6 +23,7 @@ const UserSchema: Schema = new Schema({
     },
     required: true,
   },
+  otp: { type: Number },
 });
 
 export const users = mongoose.model<IUser>("users", UserSchema);
