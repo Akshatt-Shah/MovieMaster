@@ -2,6 +2,7 @@ import { users } from "@Models";
 import { IUser } from "@interfaces";
 import Jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { sendOTP } from "../utills/SendOtp";
 export class UserServices {
   async CreateUser(data: IUser) {
     try {
@@ -104,7 +105,7 @@ export class UserServices {
         const validate = await bcrypt.compare(oldpass, userdata.password);
         if (validate) {
           newpass = await bcrypt.hash(newpass, 10);
-          console.log(newpass)
+          console.log(newpass);
           const user = await users.findByIdAndUpdate(id, { password: newpass });
           return {
             message: "Userpassword reset Successfully!!!",
@@ -126,9 +127,49 @@ export class UserServices {
       return { message: error.message, status: false };
     }
   }
-  async ForgetPasswordUser() {
+  async ForgetPasswordUser(useremail: string) {
     try {
-      
+      console.log(useremail);
+      const email = "anant.m@shaligraminfotech.com"; // Replace with recipient's email address
+      const Otp: any = await sendOTP(useremail);
+      console.log(Otp);
+      // .then(async (Otp) => {
+      //   console.log("OTP sent successfully:");
+      const otpupdate = await users.findOneAndUpdate(
+        { email: useremail },
+        { otp: Otp }
+      );
+      console.log(otpupdate);
+      return { message: "Otp Send Successfully", status: true };
+      // })
+      // .catch((err: any) => {
+      //   return { message: err.message, status: false };
+      // });
+    } catch (error: any) {
+      return { message: error.message, status: false };
+    }
+  }
+  async VerifyOtp(useremail: string, Otp: string) {
+    try {
+      const userdata = await users.findOneAndUpdate(
+        { email: useremail, otp: Otp },
+        { otp: null }
+      );
+      console.log(userdata);
+      return { message: "Otp Verified Successfully", status: true };
+    } catch (error: any) {
+      return { message: error.message, status: false };
+    }
+  }
+  async ForgetPassword(useremail: string, newpass: string) {
+    try {
+      newpass = await bcrypt.hash(newpass, 10);
+      const userdata = await users.findOneAndUpdate(
+        { email: useremail },
+        { password: newpass }
+      );
+      console.log(userdata);
+      return { message: "Password Updated Successfully", status: true };
     } catch (error: any) {
       return { message: error.message, status: false };
     }

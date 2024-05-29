@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 // });
  
 // Function to send OTP to email
-async function sendOTP(email: string) {
+export async function sendOTP(email: string) {
     // Generate a random OTP
     const otp = randomstring.generate({
         length: 6,
@@ -48,11 +48,11 @@ async function sendOTP(email: string) {
 }
  
 // Example usage
-const email = 'anant.m@shaligraminfotech.com' // Replace with recipient's email address
-sendOTP(email)
-    .then((otp) => {
-        console.log('OTP sent successfully:')
-    })
-    .catch((err) => {
-        console.error('Failed to send OTP:', err.message)
-    })
+// const email = 'anant.m@shaligraminfotech.com' // Replace with recipient's email address
+// sendOTP(email)
+//     .then((otp) => {
+//         console.log('OTP sent successfully:')
+//     })
+//     .catch((err) => {
+//         console.error('Failed to send OTP:', err.message)
+//     })

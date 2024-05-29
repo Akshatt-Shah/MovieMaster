@@ -21,4 +21,10 @@ URoute.delete("/user/DeleteUser/:userid",Verify.verifyAdmin, UserControllers.Del
 
 URoute.post("/user/ResetPassword",Verify.verifyForAll, UserControllers.ResetPasswordUser);
 
+URoute.post("/user/ForgretPassword", UserControllers.ForgetPasswordUser);
+
+URoute.post("/user/VerifyOtp", UserControllers.VerifyOtp);
+
+URoute.post("/user/ForgetPassword", UserControllers.ForgetPassword);
+
 export default URoute;
